@@ -1,6 +1,8 @@
 # Documentation interne (non versionnée)
 /doc/
 
+*.zip
+
 # Dépendances
 /node_modules
 /.pnp
