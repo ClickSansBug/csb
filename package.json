@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:actions": "tsx --import ./scripts/allow-server-only.mjs scripts/test-actions.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

@@ -1,4 +1,12 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+import { validateEnvAtStartup } from "./src/config/env";
+
+// Fails `next build` / `next dev` when an environment variable is missing or invalid.
+validateEnvAtStartup();
+
+const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -61,4 +69,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
