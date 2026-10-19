@@ -1,0 +1,198 @@
+/*
+ * Behaviours of csb-behaviors.js that are driven by data attributes, and global rules of the
+ * export (focus ring from clarifications.md). Values read from the design.
+ */
+
+@layer base {
+  /* Keyboard focus only (clarifications.md › Accessibilité : focus clavier). */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+  .island :focus-visible {
+    outline-color: var(--color-brand-light);
+  }
+}
+
+@layer components {
+  /* Scroll reveal: hidden in the static HTML, shown by the reveal controller. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Highlight that grows with the scroll (data-highlight). */
+  [data-highlight] {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-image: linear-gradient(var(--g86), var(--g86));
+    background-repeat: no-repeat;
+    background-position: 0 84%;
+    background-size: var(--highlight-progress, 0%) 0.42em;
+    transition: background-size 0.18s linear;
+    padding: 0 0.06em;
+    margin: 0 -0.06em;
+  }
+
+  /* Burger icon of the collapsed menu (csb-mobile.css). */
+  .burger-line {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition:
+      transform 0.25s ease,
+      opacity 0.2s ease;
+  }
+  [aria-expanded="true"] > .burger-line:nth-child(1) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  [aria-expanded="true"] > .burger-line:nth-child(2) {
+    opacity: 0;
+  }
+  [aria-expanded="true"] > .burger-line:nth-child(3) {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+
+  /* Cursor halo of the cards (data-lit). */
+  .lit-glow {
+    background: radial-gradient(
+      320px circle at var(--lit-x, 0) var(--lit-y, 0),
+      oklch(0.62 0.13 158 / 0.07),
+      transparent 70%
+    );
+  }
+
+  /* Vertical line of the process timeline. */
+  .timeline-line {
+    background: linear-gradient(
+      to bottom,
+      oklch(0.62 0.13 158),
+      oklch(0.62 0.13 158 / 0.12)
+    );
+  }
+
+  /* Sliding pill of the offer tabs. */
+  .tab-ink {
+    width: var(--tab-ink-width, 0);
+    transform: translateX(var(--tab-ink-x, 0));
+  }
+  .tab-ink[data-animate] {
+    transition:
+      transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Tab panel entrance (design: opacity 0 → 1, translateY(10px) → none, 0.42s). */
+  [data-panel-enter] {
+    animation: panel-enter 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes panel-enter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  /* 3D tilt of the home mock-up (transform set by the tilt hook). */
+  .tilt {
+    transform: var(--tilt, none);
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* Sticky header: tightens when scrolled; reading gauge filled by the header hook. */
+  .site-header {
+    transition:
+      height 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .gauge {
+    transform: scaleX(var(--gauge, 0));
+    transform-origin: left center;
+  }
+
+  /* Maintenance plans (design: data-fold). */
+  .fold-row {
+    transition: background 0.3s ease;
+  }
+  .fold-body {
+    transition:
+      height 0.42s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.3s ease;
+  }
+  .fold-sign {
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  [aria-expanded="true"] > .fold-sign {
+    transform: rotate(45deg);
+  }
+
+  /* FAQ (clarifications.md › FAQ). */
+  .faq-item {
+    transition:
+      border-color 0.3s ease,
+      padding 0.3s ease;
+  }
+  .faq-body {
+    transition: height 0.32s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* Contact form (design: contact.html inline transitions). */
+  .chip-transition {
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .progress-fill {
+    transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .hint-transition {
+    transition: color 0.25s ease;
+  }
+  .submit-transition {
+    transition:
+      opacity 0.25s ease,
+      background 0.25s ease;
+  }
+
+  /* Process timeline dots, animated after their first paint. */
+  .step-dot[data-animated] {
+    transition:
+      background 0.4s ease,
+      border-color 0.4s ease,
+      color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  [data-highlight] {
+    background-size: 100% 0.42em;
+  }
+  [data-panel-enter] {
+    animation: none;
+  }
+  .tab-ink[data-animate],
+  .site-header,
+  .fold-row,
+  .fold-body,
+  .fold-sign,
+  .faq-item,
+  .faq-body {
+    transition: none;
+  }
+}
