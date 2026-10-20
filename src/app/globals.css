@@ -1,1 +1,62 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Hovers also apply after a tap, as in the design (no (hover: hover) condition). */
+@custom-variant hover (&:hover);
+
+/* Base styles of the design pages, through the tokens. In the base layer, so that any utility of
+   a component wins, as the inline styles of the design did. */
+@layer base {
+  html {
+    line-height: normal;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+
+  a {
+    @apply text-ink no-underline;
+  }
+
+  a:hover {
+    @apply text-g52;
+  }
+
+  ::selection {
+    @apply bg-g86;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--accent-fill);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .theme-contact a {
+    @apply text-paper;
+  }
+
+  .theme-contact a:hover {
+    @apply text-accent-text;
+  }
+
+  .theme-contact ::selection {
+    @apply bg-g86 text-ink;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .theme-contact ::selection {
+      @apply text-paper;
+    }
+  }
+
+  .page-404 a,
+  .page-404 a:hover {
+    color: inherit;
+  }
+}

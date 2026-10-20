@@ -1,0 +1,456 @@
+/*
+ * Design tokens — values read from design.zip (csb-theme.css, csb-mobile.css, inline styles of each page).
+ * Tailwind defaults are disabled: only the design's values exist.
+ */
+
+/* Raw palette: each colour is written once. Triplets are R G B, for rgb(var(--ink) / 0.5). */
+:root {
+  --ink-day: 20 20 15;
+  --paper-day: 247 246 243;
+  --card-day: 255 254 251;
+  --g52-day: oklch(0.52 0.11 158);
+  --g42-day: oklch(0.42 0.09 158);
+  --g86-day: oklch(0.86 0.065 158);
+  --g94-day: oklch(0.94 0.035 158);
+
+  --ink: var(--ink-day);
+  --paper: var(--paper-day);
+  --card: var(--card-day);
+  --island: var(--ink-day);
+  --g52: var(--g52-day);
+  --g42: var(--g42-day);
+  --g86: var(--g86-day);
+  --g94: var(--g94-day);
+
+  --brand: oklch(0.62 0.13 158);
+  --brand-light: oklch(0.72 0.12 158);
+  --on-brand: #08150f;
+  --shadow: var(--ink-day);
+  --error: oklch(0.7 0.19 25);
+  --error-on-light: oklch(0.55 0.19 25);
+
+  /* Accent roles: green text and green fill. Island blocks and the Contact page redefine them. */
+  --accent-text: var(--g52);
+  --accent-fill: var(--brand);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: 236 234 226;
+    --paper: 18 20 17;
+    --card: 27 30 26;
+    --island: 9 26 18;
+    --g52: oklch(0.76 0.12 158);
+    --g42: oklch(0.82 0.09 158);
+    --g86: oklch(0.38 0.07 158);
+    --g94: oklch(0.27 0.045 158);
+    color-scheme: dark;
+  }
+}
+
+/* Dark blocks (data-island in the design): day values, only --island changes at night. */
+@utility island {
+  --ink: var(--ink-day);
+  --paper: var(--paper-day);
+  --card: var(--card-day);
+  --g52: var(--g52-day);
+  --g42: var(--g42-day);
+  --g86: var(--g86-day);
+  --g94: var(--g94-day);
+  --accent-text: var(--brand-light);
+  --accent-fill: var(--brand-light);
+}
+
+/*
+ * Contact page theme (04-charte/page-contact.md, clarifications.md › 2026-10-20): charcoal at night,
+ * white by day. Aliases of the palette above, no new literal colour except the day error red.
+ */
+@utility theme-contact {
+  --ink: var(--ink-day);
+  --paper: var(--paper-day);
+  --card: var(--card-day);
+  --island: var(--ink-day);
+  --g52: var(--g52-day);
+  --g42: var(--g42-day);
+  --g86: var(--g86-day);
+  --g94: var(--g94-day);
+  --accent-text: var(--brand-light);
+  --accent-fill: var(--brand-light);
+  --form-bg: rgb(var(--paper) / 0.04);
+  --lift: 0;
+
+  @media (prefers-color-scheme: light) {
+    --ink: var(--paper-day);
+    --paper: var(--ink-day);
+    --island: var(--paper-day);
+    --accent-text: var(--g52-day);
+    --accent-fill: var(--brand);
+    --form-bg: rgb(var(--card));
+    --lift: 0.18;
+    --error: var(--error-on-light);
+  }
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-ink: rgb(var(--ink));
+  --color-paper: rgb(var(--paper));
+  --color-card: rgb(var(--card));
+  --color-island: rgb(var(--island));
+  --color-g52: var(--g52);
+  --color-g42: var(--g42);
+  --color-g86: var(--g86);
+  --color-g94: var(--g94);
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-on-brand: var(--on-brand);
+  /* Text of the ready "Envoyer" button: #14140f in both Contact themes. */
+  --color-on-accent: rgb(var(--ink-day));
+  --color-shadow: rgb(var(--shadow));
+  --color-error: var(--error);
+  --color-accent-text: var(--accent-text);
+  --color-accent-fill: var(--accent-fill);
+  --color-form-bg: var(--form-bg);
+  /* Small grey texts of the Contact page, strengthened by day: a + (1 - a) × lift. */
+  --color-paper-lift-55: rgb(var(--paper) / calc(0.55 + 0.45 * var(--lift, 0)));
+  --color-paper-lift-45: rgb(var(--paper) / calc(0.45 + 0.55 * var(--lift, 0)));
+  --color-paper-lift-42: rgb(var(--paper) / calc(0.42 + 0.58 * var(--lift, 0)));
+  --color-paper-lift-38: rgb(var(--paper) / calc(0.38 + 0.62 * var(--lift, 0)));
+  --color-paper-lift-32: rgb(var(--paper) / calc(0.32 + 0.68 * var(--lift, 0)));
+}
+
+@theme {
+  --font-*: initial;
+  /* The @font-face rules of src/styles/fonts.ts declare these two family names (one rule per subset);
+     the next/font variable then adds its generated fallback and the fallbacks of the design. */
+  --font-sans: "Schibsted Grotesk", var(--font-schibsted);
+  --font-mono: "JetBrains Mono", var(--font-jetbrains);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Font sizes. Line height and letter spacing are separate tokens: in the design, an em letter
+     spacing is computed on the element that declares it and inherited as a length by its children. */
+  --text-*: initial;
+  --text-micro: 10px;
+  --text-tag: 10.5px;
+  --text-caption: 11px;
+  --text-eyebrow: 11.5px;
+  --text-note: 12px;
+  --text-meta: 12.5px;
+  --text-fine: 13px;
+  --text-label: 13.5px;
+  --text-small: 14px;
+  --text-ui: 14.5px;
+  --text-base: 15px;
+  --text-body: 15.5px;
+  --text-body-lg: 16px;
+  --text-prose: 16.5px;
+  --text-lead-sm: 17px;
+  --text-lead: 17.5px;
+  --text-lead-lg: 18px;
+  --text-title-sm: 19px;
+  --text-title: 21px;
+  --text-title-md: 22px;
+  --text-title-lg: 24px;
+  --text-heading-sm: 25px;
+  --text-heading: 26px;
+  --text-heading-md: 28px;
+  --text-heading-lg: 30px;
+  --text-heading-xl: 40px;
+  --text-h2: clamp(32px, 3.6vw, 44px);
+  --text-h2-cta: clamp(32px, 4vw, 48px);
+  --text-h2-mobile: clamp(27px, 7.2vw, 36px);
+  --text-display: clamp(44px, 5.2vw, 68px);
+  --text-display-mobile: clamp(34px, 9vw, 46px);
+  --text-display-404: clamp(44px, 5.6vw, 72px);
+  --text-figure: clamp(48px, 5.4vw, 66px);
+  --text-price: clamp(52px, 6vw, 72px);
+  --text-code-404: clamp(110px, 17vw, 230px);
+  --text-code-404-mobile: 96px;
+
+  --leading-*: initial;
+  --leading-normal: normal;
+  --leading-price: 0.9;
+  --leading-figure: 0.94;
+  --leading-display: 1.03;
+  --leading-list: 1.45;
+  --leading-snug: 1.5;
+  --leading-compact: 1.55;
+  --leading-lead: 1.58;
+  --leading-text: 1.6;
+  --leading-prose: 1.62;
+  --leading-legal: 1.7;
+  --leading-address: 1.75;
+  --leading-stack: 1.9;
+
+  --tracking-*: initial;
+  --tracking-price: -0.05em;
+  --tracking-figure: -0.045em;
+  --tracking-initials: -0.04em;
+  --tracking-display: -0.032em;
+  --tracking-heading: -0.03em;
+  --tracking-form-title: -0.025em;
+  --tracking-title: -0.02em;
+  --tracking-card-title: -0.018em;
+  --tracking-subtitle: -0.012em;
+  --tracking-unit: 0.02em;
+  --tracking-note: 0.04em;
+  --tracking-footer: 0.05em;
+  --tracking-hint: 0.06em;
+  --tracking-chip: 0.07em;
+  --tracking-delay: 0.1em;
+  --tracking-facts: 0.11em;
+  --tracking-tag: 0.12em;
+  --tracking-badge: 0.13em;
+  --tracking-eyebrow: 0.14em;
+  --tracking-spec: 0.15em;
+  --tracking-label: 0.16em;
+  --tracking-divider: 0.18em;
+
+  --radius-*: initial;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+  --radius-card: 16px;
+  --radius-panel: 14px;
+  --radius-chip: 11px;
+  --radius-field: 10px;
+  --radius-sm: 6px;
+  --radius-row: 4px;
+  --radius-bar: 2px;
+
+  --shadow-*: initial;
+  --shadow-mockup: 0 26px 60px -30px rgb(var(--shadow) / 0.28);
+  --shadow-panel: 0 18px 40px -26px rgb(var(--shadow) / 0.5);
+  --shadow-header: 0 1px 24px -12px rgb(var(--shadow) / 0.5);
+  --shadow-step: 0 0 0 8px color-mix(in oklab, var(--brand) 12%, transparent);
+
+  /* Conditions of the design's media queries, all max-width: (max-width: 900px) → max-lg (< 901px). */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 381px;
+  --breakpoint-sm: 521px;
+  --breakpoint-md: 761px;
+  --breakpoint-nav: 861px;
+  --breakpoint-lg: 901px;
+  --breakpoint-xl: 1001px;
+
+  --container-*: initial;
+  --container-page: 1180px;
+  --container-faq: 880px;
+  --container-cta: 720px;
+  --container-hero: 44rem;
+  --container-legal-lead: 38rem;
+  --container-lead-404: 34rem;
+  --container-copy-lg: 44em;
+  --container-copy-md: 36em;
+  --container-copy: 34em;
+  --container-copy-sm: 30em;
+  --container-copy-xs: 26em;
+  --container-hint: 22em;
+  --container-title: 16em;
+
+  --blur-*: initial;
+  --blur-header: 14px;
+
+  --grid-template-columns-single: 1fr;
+  --grid-template-columns-pair: 1fr auto;
+  --grid-template-columns-halves: 1fr 1fr;
+  --grid-template-columns-hero: repeat(auto-fit, minmax(340px, 1fr));
+  --grid-template-columns-facts: repeat(auto-fit, minmax(230px, 1fr));
+  --grid-template-columns-split: repeat(auto-fit, minmax(320px, 1fr));
+  --grid-template-columns-terms: repeat(auto-fit, minmax(240px, 1fr));
+  --grid-template-columns-columns: repeat(auto-fit, minmax(260px, 1fr));
+  --grid-template-columns-options: repeat(auto-fit, minmax(430px, 1fr));
+  --grid-template-columns-fields: repeat(auto-fit, minmax(190px, 1fr));
+  --grid-template-columns-bullet: 16px 1fr;
+  --grid-template-columns-bullet-sm: 14px 1fr;
+  --grid-template-columns-icon: 24px 1fr;
+  --grid-template-columns-person-sm: 60px 1fr;
+  --grid-template-columns-person: 86px 1fr;
+  --grid-template-columns-article: 62px 1fr;
+  --grid-template-columns-offer: minmax(200px, auto) minmax(40px, 1fr) auto auto;
+  --grid-template-columns-pack: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
+  --grid-template-columns-fold: 40px minmax(180px, 1fr) auto auto;
+  --grid-template-columns-fold-tablet: 30px 1fr auto;
+  --grid-template-columns-step: 44px minmax(200px, 300px) minmax(0, 1fr);
+  --grid-template-columns-step-compact: 44px minmax(0, 1fr);
+
+  --ease-*: initial;
+  --ease-standard: ease;
+  --ease-reveal: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-swift: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-pulse: cubic-bezier(0.4, 0, 0.6, 1);
+
+  --animate-*: initial;
+  --animate-caret: caret 1.1s steps(1) infinite;
+  --animate-pulse-dot: pulse-dot 2.6s var(--ease-pulse) infinite;
+  --animate-drift: drift 24s linear infinite alternate;
+  --animate-accent-rule: accent-rule 0.6s var(--ease-reveal) 120ms both;
+
+  @keyframes caret {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 var(--dot-halo);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.72);
+      box-shadow: 0 0 0 7px transparent;
+      opacity: 0.45;
+    }
+  }
+  @keyframes drift {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(-3%, -3%);
+    }
+  }
+  @keyframes accent-rule {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+/* Values used by globals.css and the effects below. */
+:root {
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+  --reveal-offset: 14px;
+  --reveal-duration: 0.7s;
+}
+
+/* Halo of the pulsing dot: brand green, light green on a dark surface. */
+@utility dot-halo {
+  --dot-halo: color-mix(in oklab, var(--brand) 45%, transparent);
+}
+@utility dot-halo-light {
+  --dot-halo: color-mix(in oklab, var(--brand-light) 45%, transparent);
+}
+
+/* Paper grain (fixed SVG noise over the page). */
+@utility grain {
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22/></filter><rect width=%22160%22 height=%22160%22 filter=%22url(%23n)%22/></svg>");
+}
+@utility grain-drift {
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  animation: var(--animate-drift);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+@utility grain-overlay {
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* Progressive highlight (data-highlight): the mint band grows with the scroll, full when motion is reduced. */
+@utility highlight {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-image: linear-gradient(var(--g86), var(--g86));
+  background-repeat: no-repeat;
+  background-position: 0 84%;
+  background-size: var(--highlight-progress, 0%) 0.42em;
+  transition: background-size 0.18s linear;
+  padding: 0 0.06em;
+  margin: 0 -0.06em;
+
+  @media (prefers-reduced-motion: reduce) {
+    background-size: 100% 0.42em;
+  }
+}
+
+/* Cursor halo of the cards (data-lit). */
+@utility lit-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: inherit;
+  background: radial-gradient(
+    320px circle at var(--lit-x, 0) var(--lit-y, 0),
+    color-mix(in oklab, var(--brand) 7%, transparent),
+    transparent 70%
+  );
+}
+
+/* Scroll reveal (data-reveal): hidden until the effect shows it; visible at once when motion is reduced. */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-offset));
+  transition:
+    opacity var(--reveal-duration) var(--ease-reveal),
+    transform var(--reveal-duration) var(--ease-reveal);
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Mobile menu button: three bars that turn into a cross (csb-mobile.css). */
+@utility burger {
+  & > span {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition:
+      transform 0.25s ease,
+      opacity 0.2s ease;
+  }
+  &[aria-expanded="true"] > span:nth-child(1) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  &[aria-expanded="true"] > span:nth-child(2) {
+    opacity: 0;
+  }
+  &[aria-expanded="true"] > span:nth-child(3) {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+}
+
+/* Durations and curves applied from scripts (tabs, folds, accordion). */
+:root {
+  --motion-tab: 0.42s;
+  --motion-fold-fade: 0.3s;
+  --motion-accordion: 0.32s;
+}
+
+/* Timeline of the Process page: brand gradient line. */
+@utility timeline-line {
+  background: linear-gradient(
+    to bottom,
+    var(--brand),
+    color-mix(in oklab, var(--brand) 12%, transparent)
+  );
+}
