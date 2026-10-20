@@ -595,13 +595,14 @@ export function ContactForm({
             autoComplete="off"
             defaultValue=""
           />
+          {/* No defaultValue prop: React would write it back to "" on each render, and the
+              automatic reset after a failed sending would then empty the timestamp. */}
           <input
             ref={startedAtRef}
             name="startedAt"
             type="text"
             tabIndex={-1}
             autoComplete="off"
-            defaultValue=""
           />
         </div>
       </form>

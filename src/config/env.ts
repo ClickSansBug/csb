@@ -38,9 +38,22 @@ export type Env = z.output<typeof envSchema>;
 
 type EnvSource = Record<string, string | undefined>;
 
+// A preview's URL is only known once Vercel deploys it: fall back to VERCEL_URL (set by Vercel, no protocol).
+// Production always requires an explicit NEXT_PUBLIC_SITE_URL.
+function withSiteUrlFallback(source: EnvSource): EnvSource {
+  if (
+    source.NEXT_PUBLIC_SITE_URL ||
+    source.VERCEL_ENV === "production" ||
+    !source.VERCEL_URL
+  ) {
+    return source;
+  }
+  return { ...source, NEXT_PUBLIC_SITE_URL: `https://${source.VERCEL_URL}` };
+}
+
 // Throws a single error listing every missing or invalid variable.
 export function parseEnv(source: EnvSource): Env {
-  const result = envSchema.safeParse(source);
+  const result = envSchema.safeParse(withSiteUrlFallback(source));
   if (!result.success) {
     throw new Error(
       `Invalid environment variables:\n${z.prettifyError(result.error)}`,
@@ -72,7 +85,8 @@ export function getEnv(): Env {
       CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL ?? "",
       CONTACT_FROM_EMAIL: process.env.CONTACT_FROM_EMAIL ?? "",
       CONTACT_DRY_RUN: process.env.CONTACT_DRY_RUN === "true",
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "",
+      NEXT_PUBLIC_SITE_URL:
+        withSiteUrlFallback(process.env).NEXT_PUBLIC_SITE_URL ?? "",
       VERCEL_ENV:
         vercelEnv === "development" ||
         vercelEnv === "preview" ||

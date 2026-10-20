@@ -44,6 +44,25 @@ describe("parseEnv", () => {
     ).toBe(true);
   });
 
+  it("falls back to VERCEL_URL for NEXT_PUBLIC_SITE_URL outside production", () => {
+    const preview = {
+      ...valid,
+      NEXT_PUBLIC_SITE_URL: "",
+      VERCEL_ENV: "preview",
+      VERCEL_URL: "csb-abc123.vercel.app",
+    };
+    expect(parseEnv(preview).NEXT_PUBLIC_SITE_URL).toBe(
+      "https://csb-abc123.vercel.app",
+    );
+    expect(() =>
+      parseEnv({ ...preview, VERCEL_ENV: "production" }),
+    ).toThrowError(/NEXT_PUBLIC_SITE_URL/);
+    expect(
+      parseEnv({ ...preview, NEXT_PUBLIC_SITE_URL: "https://clicksansbug.ch" })
+        .NEXT_PUBLIC_SITE_URL,
+    ).toBe("https://clicksansbug.ch");
+  });
+
   it("defaults CONTACT_DRY_RUN to false and rejects other values", () => {
     expect(parseEnv({ ...valid, CONTACT_DRY_RUN: "" }).CONTACT_DRY_RUN).toBe(
       false,

@@ -100,12 +100,14 @@ export function HeaderBar({
     };
   }, [open, close]);
 
+  // The shrink is offset by a bottom margin so the header keeps a constant 68px in the flow:
+  // otherwise scroll anchoring moves scrollY back across the threshold and the header oscillates.
   return (
     <header
       data-scrolled={scrolled ? "" : undefined}
       className={cn(
         "sticky top-0 z-100 h-17 border-b backdrop-blur-header transition-all duration-300 ease-standard",
-        "data-scrolled:h-14.5 data-scrolled:shadow-header motion-reduce:transition-none max-nav:backdrop-blur-none",
+        "data-scrolled:mb-2.5 data-scrolled:h-14.5 data-scrolled:shadow-header motion-reduce:transition-none max-nav:backdrop-blur-none",
         contact
           ? "border-paper/10 bg-island/82 max-nav:bg-island"
           : "border-ink/8 bg-paper/82 max-nav:bg-paper",
