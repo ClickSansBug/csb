@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
@@ -27,7 +28,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={fontVariables}>
-      <body>{children}</body>
+      <body>
+        {/* Client components (contact form validation) read their messages from this provider
+            (backend-report.md › Branchements globaux); locale and messages come from i18n/request.ts. */}
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </body>
     </html>
   );
 }

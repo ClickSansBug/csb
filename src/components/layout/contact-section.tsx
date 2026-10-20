@@ -46,6 +46,13 @@ export function ContactSection() {
       {chunks}
     </a>
   );
+  // Fallback link of the sending failure message, in the colour of the message
+  // (clarifications.md › Réponses aux questions de wiring, point 1).
+  const failureLink = (chunks: ReactNode) => (
+    <a href={`mailto:${email}`} className="text-error underline">
+      {chunks}
+    </a>
+  );
 
   return (
     <section className="mx-auto grid max-w-page grid-cols-hero items-start gap-16 px-8 pt-19 pb-24 max-lg:px-6 max-nav:grid-cols-single max-sm:px-4.5">
@@ -84,8 +91,14 @@ export function ContactSection() {
             hintMissing: t("hint.missing"),
             hintReady: t("hint.ready"),
             submit: t("submit"),
+            pending: t("pending"),
             reassurance: t("reassurance"),
             honeypot: t("honeypot"),
+            success: {
+              title: t("success.title"),
+              text: t("success.text"),
+              reset: t("success.reset"),
+            },
           }}
           progress={ESSENTIALS.map((count) => t("progress", { count }))}
           siteTypes={SITE_TYPES.map((value) => ({
@@ -98,6 +111,7 @@ export function ContactSection() {
             label: t(`pack.options.${key}`),
           }))}
           privacy={t.rich("privacy", { link: privacyLink })}
+          failure={t.rich("failure", { link: failureLink })}
         />
         <noscript>
           {/* integration-allow: CSS rule of the <noscript> block (clarifications.md › Sans JavaScript), not visible text */}
