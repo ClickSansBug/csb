@@ -18,15 +18,18 @@ import { flushSync } from "react-dom";
 
 import { OFFER_QUERY_PARAM } from "@/config/routes";
 import {
+  CONTACT_FIELD_LIMITS,
   CONTACT_FIELDS,
   type ContactField,
   type ContactFormValues,
   type ContactResult,
   type ContactState,
   createContactSchema,
+  HONEYPOT_FIELD,
   type Pack,
   sendContactMessage,
   type SiteType,
+  STARTED_AT_FIELD,
   toFieldErrors,
 } from "@/features/contact";
 import { prefersReducedMotion } from "@/hooks/reduced-motion";
@@ -47,14 +50,6 @@ const PROGRESS_WIDTHS = [
   "w-4/5",
   "w-full",
 ] as const;
-// Hard limits of clarifications.md › Nettoyage et limites de saisie.
-const MAX_LENGTH = {
-  company: 100,
-  name: 100,
-  activity: 2000,
-  email: 254,
-  phone: 30,
-} as const;
 
 const LABEL = "mb-2.25 block text-label text-paper/72";
 const GROUP_LABEL = "mb-3 block text-label text-paper/72";
@@ -72,7 +67,7 @@ const CHIP_ACTIVE = "border-brand bg-brand text-on-brand";
 
 type TextField = { label: string; placeholder: string };
 
-export type ContactFormLabels = {
+type ContactFormLabels = {
   brief: string;
   title: string;
   intro: string;
@@ -321,6 +316,27 @@ export function ContactForm({
         {errors[field][0]}
       </p>
     ) : null;
+  // Single-line field: label, input (maxLength of the contract) and its error message.
+  const textInput = (
+    field: "company" | "name" | "email" | "phone",
+    type: "text" | "email" | "tel",
+    autoComplete: string,
+    label: ReactNode = labels[field].label,
+  ) => (
+    <div>
+      <label htmlFor={`${id}-${field}`} className={LABEL}>
+        {label}
+      </label>
+      <input
+        {...fieldProps(field)}
+        type={type}
+        autoComplete={autoComplete}
+        maxLength={CONTACT_FIELD_LIMITS[field].max}
+        placeholder={labels[field].placeholder}
+      />
+      {fieldError(field)}
+    </div>
+  );
 
   return (
     <>
@@ -441,32 +457,8 @@ export function ContactForm({
           </div>
 
           <div className="grid grid-cols-fields gap-4 max-nav:grid-cols-single">
-            <div>
-              <label htmlFor={`${id}-company`} className={LABEL}>
-                {labels.company.label}
-              </label>
-              <input
-                {...fieldProps("company")}
-                type="text"
-                autoComplete="organization"
-                maxLength={MAX_LENGTH.company}
-                placeholder={labels.company.placeholder}
-              />
-              {fieldError("company")}
-            </div>
-            <div>
-              <label htmlFor={`${id}-name`} className={LABEL}>
-                {labels.name.label}
-              </label>
-              <input
-                {...fieldProps("name")}
-                type="text"
-                autoComplete="name"
-                maxLength={MAX_LENGTH.name}
-                placeholder={labels.name.placeholder}
-              />
-              {fieldError("name")}
-            </div>
+            {textInput("company", "text", "organization")}
+            {textInput("name", "text", "name")}
           </div>
 
           <div>
@@ -476,40 +468,23 @@ export function ContactForm({
             <textarea
               {...fieldProps("activity", "resize-y leading-compact")}
               rows={4}
-              maxLength={MAX_LENGTH.activity}
+              maxLength={CONTACT_FIELD_LIMITS.activity.max}
               placeholder={labels.activity.placeholder}
             />
             {fieldError("activity")}
           </div>
 
           <div className="grid grid-cols-fields gap-4 max-nav:grid-cols-single">
-            <div>
-              <label htmlFor={`${id}-email`} className={LABEL}>
-                {labels.email.label}
-              </label>
-              <input
-                {...fieldProps("email")}
-                type="email"
-                autoComplete="email"
-                maxLength={MAX_LENGTH.email}
-                placeholder={labels.email.placeholder}
-              />
-              {fieldError("email")}
-            </div>
-            <div>
-              <label htmlFor={`${id}-phone`} className={LABEL}>
+            {textInput("email", "email", "email")}
+            {textInput(
+              "phone",
+              "tel",
+              "tel",
+              <>
                 {labels.phone.label}{" "}
                 <span className="opacity-50">{labels.phone.optional}</span>
-              </label>
-              <input
-                {...fieldProps("phone")}
-                type="tel"
-                autoComplete="tel"
-                maxLength={MAX_LENGTH.phone}
-                placeholder={labels.phone.placeholder}
-              />
-              {fieldError("phone")}
-            </div>
+              </>,
+            )}
           </div>
 
           <div>
@@ -586,10 +561,10 @@ export function ContactForm({
           aria-hidden="true"
           className="absolute -left-2500 size-px overflow-hidden"
         >
-          <label htmlFor={`${id}-website`}>{labels.honeypot}</label>
+          <label htmlFor={`${id}-${HONEYPOT_FIELD}`}>{labels.honeypot}</label>
           <input
-            id={`${id}-website`}
-            name="website"
+            id={`${id}-${HONEYPOT_FIELD}`}
+            name={HONEYPOT_FIELD}
             type="text"
             tabIndex={-1}
             autoComplete="off"
@@ -599,7 +574,7 @@ export function ContactForm({
               automatic reset after a failed sending would then empty the timestamp. */}
           <input
             ref={startedAtRef}
-            name="startedAt"
+            name={STARTED_AT_FIELD}
             type="text"
             tabIndex={-1}
             autoComplete="off"

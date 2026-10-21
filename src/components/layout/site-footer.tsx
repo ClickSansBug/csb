@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { ButtonLink } from "@/components/ui/button-link";
-import { Logo } from "@/components/ui/logo";
 import { ROUTES } from "@/config/routes";
+import { useCurrentYear } from "@/hooks/use-current-year";
 import { cn } from "@/utils/cn";
+
+import { SiteLogo } from "./site-logo";
 
 const FOOTER_LINKS = ["pricing", "process", "faq", "contact"] as const;
 
@@ -15,9 +17,7 @@ type SiteFooterProps = {
 // Dark footer of every page. On the Contact page it follows the page theme (lifted greys).
 export function SiteFooter({ contact = false }: SiteFooterProps) {
   const t = useTranslations("common");
-  const format = useFormatter();
-  // Year computed at build time, Europe/Zurich time zone (clarifications.md › Pied de page : année).
-  const year = format.dateTime(new Date(), { year: "numeric" });
+  const year = useCurrentYear();
   const linkTone = contact
     ? "text-paper-lift-55 hover:text-paper"
     : "text-paper/55 hover:text-paper";
@@ -33,13 +33,7 @@ export function SiteFooter({ contact = false }: SiteFooterProps) {
       )}
     >
       <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-6 px-8 pt-9 pb-4 max-lg:px-6 max-md:flex-col max-md:items-stretch max-md:gap-6.5 max-md:pt-11 max-md:pb-2.5 max-sm:px-4.5">
-        <Logo
-          href={ROUTES.home}
-          size="footer"
-          start={t("logo.start")}
-          accent={t("logo.accent")}
-          end={t("logo.end")}
-        />
+        <SiteLogo size="footer" />
         <nav
           aria-label={t("footer.label")}
           className="flex flex-wrap gap-6.5 text-label max-md:grid max-md:grid-cols-halves max-md:gap-x-5 max-md:gap-y-4 max-md:text-base"

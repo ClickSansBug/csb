@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { BEHAVIOR_SELECTORS } from "./behavior-selectors";
 import { prefersReducedMotion } from "./reduced-motion";
+import { listenToScrollAndResize } from "./scroll-and-resize";
 
 // Port of "Surlignage qui se propage au scroll" (csb-behaviors.js): the mint band of each
 // [data-highlight] grows from 0 to 100% while its top goes from 82% to 48% of the viewport.
@@ -35,12 +36,6 @@ export function useHighlights() {
       });
     };
 
-    window.addEventListener("scroll", paint, { passive: true });
-    window.addEventListener("resize", paint);
-    paint();
-    return () => {
-      window.removeEventListener("scroll", paint);
-      window.removeEventListener("resize", paint);
-    };
+    return listenToScrollAndResize(paint);
   }, []);
 }

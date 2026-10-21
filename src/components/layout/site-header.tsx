@@ -1,10 +1,10 @@
 import { useTranslations } from "next-intl";
 
 import { ButtonLink } from "@/components/ui/button-link";
-import { Logo } from "@/components/ui/logo";
 import { type RouteKey, ROUTES } from "@/config/routes";
 
 import { HeaderBar } from "./header-bar";
+import { SiteLogo } from "./site-logo";
 
 export type NavKey = Extract<RouteKey, "pricing" | "process" | "faq">;
 
@@ -25,14 +25,7 @@ export function SiteHeader({ current, contact = false }: SiteHeaderProps) {
       navLabel={t("nav.label")}
       openMenuLabel={t("nav.openMenu")}
       closeMenuLabel={t("nav.closeMenu")}
-      logo={
-        <Logo
-          href={ROUTES.home}
-          start={t("logo.start")}
-          accent={t("logo.accent")}
-          end={t("logo.end")}
-        />
-      }
+      logo={<SiteLogo />}
       links={HEADER_LINKS.map((key) => ({
         href: ROUTES[key],
         label: t(`nav.${key}`),

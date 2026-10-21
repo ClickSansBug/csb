@@ -11,7 +11,7 @@ import {
   createNotificationEmail,
 } from "./contact-emails";
 
-export type SendContactRequestResult = { ok: true } | { ok: false };
+type SendContactRequestResult = { ok: true } | { ok: false };
 
 // Notification first; the acknowledgement only once the request has reached the inbox.
 // A failed acknowledgement is logged but still counts as a success for the visitor.

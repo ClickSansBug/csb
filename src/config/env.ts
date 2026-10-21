@@ -34,7 +34,7 @@ const envSchema = z
       ),
   });
 
-export type Env = z.output<typeof envSchema>;
+type Env = z.output<typeof envSchema>;
 
 type EnvSource = Record<string, string | undefined>;
 

@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 
+import { listenToScrollAndResize } from "@/hooks/scroll-and-resize";
 import { cn } from "@/utils/cn";
 
 // Sticky header of the design: shrinks after 12px of scroll, green reading gauge, folded menu
@@ -17,7 +18,7 @@ import { cn } from "@/utils/cn";
 const SCROLLED_AFTER_PX = 12;
 const MENU_BREAKPOINT_PX = 860;
 
-export type HeaderLink = {
+type HeaderLink = {
   href: string;
   label: string;
   current: boolean;
@@ -60,13 +61,7 @@ export function HeaderBar({
         gaugeRef.current.style.scale = `${Math.min(1, y / max)} 1`;
       setScrolled(y > SCROLLED_AFTER_PX);
     };
-    window.addEventListener("scroll", paint, { passive: true });
-    window.addEventListener("resize", paint);
-    paint();
-    return () => {
-      window.removeEventListener("scroll", paint);
-      window.removeEventListener("resize", paint);
-    };
+    return listenToScrollAndResize(paint);
   }, []);
 
   const close = useCallback(() => setOpen(false), []);

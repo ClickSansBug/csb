@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
 import { prefersReducedMotion } from "@/hooks/reduced-motion";
+import { useElementMap } from "@/hooks/use-element-map";
 import { cn } from "@/utils/cn";
 
 // Maintenance plans that unfold (data-fold of csb-behaviors.js): one open at a time, B open on
@@ -34,7 +35,7 @@ export function MaintenanceFolds({
 }: MaintenanceFoldsProps) {
   const [open, setOpen] = useState<string | null>(defaultOpen);
   const baseId = useId();
-  const bodies = useRef(new Map<string, HTMLDivElement>());
+  const [bodies, registerBody] = useElementMap<HTMLDivElement>();
   const animate = useRef(false);
 
   // Height of each body: its scroll height when open, 0 when closed (kept in sync on resize, and
@@ -60,7 +61,7 @@ export function MaintenanceFolds({
       active = false;
       window.removeEventListener("resize", resize);
     };
-  }, [open]);
+  }, [open, bodies]);
 
   const toggle = (id: string) => {
     animate.current = true;
@@ -118,10 +119,7 @@ export function MaintenanceFolds({
               </div>
             </button>
             <div
-              ref={(node) => {
-                if (node) bodies.current.set(plan.id, node);
-                else bodies.current.delete(plan.id);
-              }}
+              ref={registerBody(plan.id)}
               id={bodyId}
               aria-hidden={!isOpen}
               inert={!isOpen}

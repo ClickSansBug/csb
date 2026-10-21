@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import { BEHAVIOR_SELECTORS } from "./behavior-selectors";
+import { listenToScrollAndResize } from "./scroll-and-resize";
 
 // Port of "Ligne de temps" (csb-behaviors.js): the dot of a [data-step] turns green while the
 // step is between 8% and 62% of the viewport height (data-current) or once it is above it
@@ -31,12 +32,6 @@ export function useTimeline() {
       });
     };
 
-    window.addEventListener("scroll", paint, { passive: true });
-    window.addEventListener("resize", paint);
-    paint();
-    return () => {
-      window.removeEventListener("scroll", paint);
-      window.removeEventListener("resize", paint);
-    };
+    return listenToScrollAndResize(paint);
   }, []);
 }

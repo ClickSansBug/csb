@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { AccentRule } from "@/components/ui/accent-rule";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Logo } from "@/components/ui/logo";
 import { SkipLink } from "@/components/ui/skip-link";
 import { ROUTES } from "@/config/routes";
+import { useCurrentYear } from "@/hooks/use-current-year";
+
+import { SiteLogo } from "./site-logo";
 
 const HEADER_LINKS = ["pricing", "process", "faq"] as const;
 const QUICK_LINKS = ["process", "faq", "contact"] as const;
@@ -16,8 +18,7 @@ const WRAP = "mx-auto w-full max-w-page px-8 max-md:px-5";
 export function NotFoundView() {
   const t = useTranslations("notFound");
   const common = useTranslations("common");
-  const format = useFormatter();
-  const year = format.dateTime(new Date(), { year: "numeric" });
+  const year = useCurrentYear();
   const email = common("email");
 
   return (
@@ -27,12 +28,7 @@ export function NotFoundView() {
         <div
           className={`flex h-full items-center justify-between gap-6 ${WRAP}`}
         >
-          <Logo
-            href={ROUTES.home}
-            start={common("logo.start")}
-            accent={common("logo.accent")}
-            end={common("logo.end")}
-          />
+          <SiteLogo />
           <nav
             aria-label={common("nav.label")}
             className="flex items-center gap-8"

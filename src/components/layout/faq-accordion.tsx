@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { prefersReducedMotion } from "@/hooks/reduced-motion";
+import { useElementMap } from "@/hooks/use-element-map";
 import { cn } from "@/utils/cn";
 
 // FAQ accordion (script of faq.html, clarifications.md › FAQ): one question open, the first on
@@ -38,7 +39,7 @@ export function FaqAccordion({
 }: FaqAccordionProps) {
   const [open, setOpen] = useState<string | null>(items[0]?.id ?? null);
   const baseId = useId();
-  const bodies = useRef(new Map<string, HTMLDivElement>());
+  const [bodies, registerBody] = useElementMap<HTMLDivElement>();
   const animate = useRef(false);
   const previous = useRef<string | null>(open);
 
@@ -68,7 +69,7 @@ export function FaqAccordion({
       cleanups.push(() => body.removeEventListener("transitionend", settle));
     });
     return () => cleanups.forEach((cleanup) => cleanup());
-  }, [open]);
+  }, [open, bodies]);
 
   return (
     <div className={cn("border-t border-ink/12", className)}>
@@ -104,10 +105,7 @@ export function FaqAccordion({
               </button>
             </h2>
             <div
-              ref={(node) => {
-                if (node) bodies.current.set(item.id, node);
-                else bodies.current.delete(item.id);
-              }}
+              ref={registerBody(item.id)}
               id={bodyId}
               aria-hidden={!isOpen}
               inert={!isOpen}

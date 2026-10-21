@@ -11,6 +11,7 @@ import {
 } from "react";
 
 import { prefersReducedMotion } from "@/hooks/reduced-motion";
+import { useElementMap } from "@/hooks/use-element-map";
 import { cn } from "@/utils/cn";
 
 // Essentiel / Présence / Performance selector (data-tabs of csb-behaviors.js): the ink pill slides
@@ -33,8 +34,8 @@ export function PackTabs({ tabs, defaultTab }: PackTabsProps) {
   const [selected, setSelected] = useState(defaultTab);
   const baseId = useId();
   const inkRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef(new Map<string, HTMLButtonElement>());
-  const panelRefs = useRef(new Map<string, HTMLDivElement>());
+  const [tabRefs, registerTab] = useElementMap<HTMLButtonElement>();
+  const [panelRefs, registerPanel] = useElementMap<HTMLDivElement>();
   const animate = useRef(false);
 
   // Ink position: width and offset of the selected tab, measured after its weight changed.
@@ -67,7 +68,7 @@ export function PackTabs({ tabs, defaultTab }: PackTabsProps) {
       window.removeEventListener("resize", relayout);
       window.clearTimeout(timer);
     };
-  }, [selected]);
+  }, [selected, tabRefs]);
 
   // Panel entrance: from 10px lower and transparent, unless motion is reduced.
   useEffect(() => {
@@ -83,7 +84,7 @@ export function PackTabs({ tabs, defaultTab }: PackTabsProps) {
       panel.style.transform = "none";
     });
     return () => cancelAnimationFrame(frame);
-  }, [selected]);
+  }, [selected, panelRefs]);
 
   const select = (id: string, focus: boolean) => {
     animate.current = true;
@@ -130,10 +131,7 @@ export function PackTabs({ tabs, defaultTab }: PackTabsProps) {
           return (
             <button
               key={tab.id}
-              ref={(node) => {
-                if (node) tabRefs.current.set(tab.id, node);
-                else tabRefs.current.delete(tab.id);
-              }}
+              ref={registerTab(tab.id)}
               type="button"
               role="tab"
               id={`${baseId}-tab-${tab.id}`}
@@ -157,10 +155,7 @@ export function PackTabs({ tabs, defaultTab }: PackTabsProps) {
         {tabs.map((tab) => (
           <div
             key={tab.id}
-            ref={(node) => {
-              if (node) panelRefs.current.set(tab.id, node);
-              else panelRefs.current.delete(tab.id);
-            }}
+            ref={registerPanel(tab.id)}
             role="tabpanel"
             id={`${baseId}-panel-${tab.id}`}
             aria-labelledby={`${baseId}-tab-${tab.id}`}

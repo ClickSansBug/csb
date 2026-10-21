@@ -1,7 +1,7 @@
 import { CONTACT_FIELDS, HONEYPOT_FIELD, STARTED_AT_FIELD } from "../constants";
 import type { ContactFormValues } from "../types";
 
-export type ContactSubmission = {
+type ContactSubmission = {
   values: ContactFormValues;
   honeypot: string;
   startedAt: string;

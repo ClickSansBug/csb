@@ -1,28 +1,30 @@
-import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import { AccentRule } from "@/components/ui/accent-rule";
 import { Badge } from "@/components/ui/badge";
+import { titleAccentTag } from "@/components/ui/rich-text";
 import { Section, SECTION_GUTTERS } from "@/components/ui/section";
 import { cn } from "@/utils/cn";
 
 type PageHeroProps = {
-  badge: string;
-  title: ReactNode;
-  text: string;
+  page: "pricing" | "process" | "faq" | "legal";
   // Pricing ends its hero 4px higher (20px) than Process, FAQ and the legal notice (24px).
   tight?: boolean;
   // Legal notice: still rule and a 17.5px introduction.
   legal?: boolean;
 };
 
-// Title block at the top of the Pricing, Process, FAQ and legal pages.
+// Title block at the top of the Pricing, Process, FAQ and legal pages (texts in <page>.hero).
 export function PageHero({
-  badge,
-  title,
-  text,
+  page,
   tight = false,
   legal = false,
 }: PageHeroProps) {
+  const t = useTranslations();
+  const badge = t(`${page}.hero.badge`);
+  const title = t.rich(`${page}.hero.title`, { em: titleAccentTag });
+  const text = t(`${page}.hero.text`);
+
   return (
     <Section
       className={cn("mx-auto max-w-page px-8 pt-22", tight ? "pb-5" : "pb-6")}
