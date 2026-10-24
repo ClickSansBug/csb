@@ -45,7 +45,7 @@ export const legal = {
     number: "04",
     title: "Protection des données et cookies",
     notice:
-      "Ce site ne demande aucun compte, n'utilise aucun outil de mesure d'audience ni aucun traceur publicitaire, et ne dépose aucun cookie sur votre appareil.",
+      "Ce site ne demande aucun compte, n'utilise aucun traceur publicitaire et ne dépose aucun cookie sur votre appareil. Il utilise Vercel Web Analytics et Vercel Speed Insights, les outils de mesure d'audience et de performance de son hébergeur Vercel, qui fonctionnent sans cookie et de façon anonyme.",
     topics: {
       received: {
         title: "Ce que nous recevons, et pourquoi",
